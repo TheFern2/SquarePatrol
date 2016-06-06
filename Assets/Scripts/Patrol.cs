@@ -13,6 +13,8 @@ public class Patrol : MonoBehaviour
 	private int currentPoint;
 	private Transform patrolTf;
 
+	protected bool paused;
+
 	// Use this for initialization
 	void Start ()
 	{
@@ -25,16 +27,29 @@ public class Patrol : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		// If patrol position equals current point, move to next point
-		if (patrolTf.position == patrolPoints [currentPoint].position) {
-			currentPoint++;
+		if (!paused) {
+			// If patrol position equals current point, move to next point
+			if (patrolTf.position == patrolPoints [currentPoint].position) {
+				currentPoint++;
+			}
+			
+			if (currentPoint >= patrolPoints.Length) {
+				currentPoint = 0;
+			}
+			
+			// Move patrol to next point
+			patrolTf.position = Vector3.MoveTowards (patrolTf.position, patrolPoints [currentPoint].position, moveSpeed * Time.deltaTime);
 		}
+	}
 
-		if (currentPoint >= patrolPoints.Length) {
-			currentPoint = 0;
-		}
-
-		// Move patrol to next point
-		patrolTf.position = Vector3.MoveTowards (patrolTf.position, patrolPoints [currentPoint].position, moveSpeed * Time.deltaTime);
+	void OnPauseGame ()
+	{
+		paused = true;
+	}
+	
+	
+	void OnResumeGame ()
+	{
+		paused = false;
 	}
 }

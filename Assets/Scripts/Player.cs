@@ -15,6 +15,8 @@ public class Player : MonoBehaviour
 	private Vector3 spawnPoint;
 	public AudioClip[] gameEffects;	
 
+	protected bool paused;
+
 	// Use this for initialization
 	void Start ()
 	{
@@ -25,18 +27,20 @@ public class Player : MonoBehaviour
 
 	void FixedUpdate ()
 	{
-		input = new Vector3 (Input.GetAxisRaw ("Horizontal"), 0, Input.GetAxisRaw ("Vertical"));
-	
-		if (playerRb.velocity.magnitude < maxSpeed) {
-			if (Input.GetKey ("space")) {
-				playerRb.AddRelativeForce (input * courseSpeed);
-			} else 
-				playerRb.AddRelativeForce (input * moveSpeed);
-		}
-
-		// Check if player falls below
-		if (playerRb.position.y < -3.0) {
-			Die ();
+		if (!paused) {
+			input = new Vector3 (Input.GetAxisRaw ("Horizontal"), 0, Input.GetAxisRaw ("Vertical"));
+			
+			if (playerRb.velocity.magnitude < maxSpeed) {
+				if (Input.GetKey ("space")) {
+					playerRb.AddRelativeForce (input * courseSpeed);
+				} else 
+					playerRb.AddRelativeForce (input * moveSpeed);
+			}
+			
+			// Check if player falls below
+			if (playerRb.position.y < -3.0) {
+				Die ();
+			}
 		}
 
 	}
@@ -94,5 +98,16 @@ public class Player : MonoBehaviour
 		PlaySound (3);
 		Instantiate (deathParticles, playerRb.position, Quaternion.identity);
 		playerRb.position = spawnPoint;
+	}
+
+	void OnPauseGame ()
+	{
+		paused = true;
+	}
+	
+	
+	void OnResumeGame ()
+	{
+		paused = false;
 	}
 }

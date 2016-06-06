@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour
 	// GUI stuff
 	private bool showStatsScreen = false;
 	private bool showPauseScreen = false;
-	public int statsScreenWidth, statsScreenHeight;
+	public float statsScreenWidth, statsScreenHeight;
 
 	void Update ()
 	{
@@ -60,6 +60,11 @@ public class GameManager : MonoBehaviour
 			// Need to create a new GUI Pause Box to show when game is paused
 			if ((startTime > 0.0) && Input.GetKey (KeyCode.Escape)) {
 				showPauseScreen = true;
+
+				Object[] objects = FindObjectsOfType (typeof(GameObject));
+				foreach (GameObject go in objects) {
+					go.SendMessage ("OnPauseGame", SendMessageOptions.DontRequireReceiver);
+				}
 			}
 		}
 
@@ -151,7 +156,7 @@ public class GameManager : MonoBehaviour
 		GUI.Label (new Rect (30, 50, 200, 200), tokenCount.ToString () + "/" + totalTokenCount.ToString ());
 
 
-		// Show Status Screen
+		//-------------------------------------- Show Stats Message ----------------------------------------------------//
 		if (showStatsScreen) {
 			Rect statsScreenRec = new Rect (Screen.width / 2 - (Screen.width * 0.5f / 2),
 			                                Screen.height / 2 - (Screen.height * 0.5f / 2),
@@ -177,30 +182,35 @@ public class GameManager : MonoBehaviour
 
 		}
 
-		// Show Pause Screen
+		//-------------------------------------- Show Pause Message ----------------------------------------------------//
 		if (showPauseScreen) {
 			Rect pauseScreenRec = new Rect (Screen.width / 2 - (Screen.width * 0.5f / 2),
 			                                Screen.height / 2 - (Screen.height * 0.5f / 2),
-			                                Screen.width * 0.5f, Screen.height * 0.5f);
+			                                Screen.width * 0.25f, Screen.height * 0.15f);
 			
-			GUI.Box (pauseScreenRec, "Stats");
+			GUI.Box (pauseScreenRec, "Pause");
 			
 			// int gameTime = (int)startTime;
-			currentScore = tokenCount * (int)startTime;
+			// currentScore = tokenCount * (int)startTime;
 			
 			if (GUI.Button (new Rect (pauseScreenRec.x + pauseScreenRec.width - 170, 
-			                          pauseScreenRec.y + pauseScreenRec.height - 60, 150, 40), "Continue")) {
+			                          pauseScreenRec.y + pauseScreenRec.height - 60, 150, 40), "Resume")) {
 
-				Application.LoadLevel (CheckLoadedLevel ());
+				Object[] objects = FindObjectsOfType (typeof(GameObject));
+				foreach (GameObject go in objects) {
+					go.SendMessage ("OnResumeGame", SendMessageOptions.DontRequireReceiver);
+				}
+
+				showPauseScreen = false;
 			}
 			
 			if (GUI.Button (new Rect (pauseScreenRec.x + 20, 
-			                          pauseScreenRec.y + pauseScreenRec.height - 60, 100, 40), "Quit")) {
+			                          pauseScreenRec.y + pauseScreenRec.height - 60, 100, 40), "Quit to menu")) {
 				Application.LoadLevel (0);
 			}
 			
-			GUI.Label (new Rect (pauseScreenRec.x + 20, pauseScreenRec.y + 40, 300, 50), "Score " + currentScore.ToString ());
-			GUI.Label (new Rect (pauseScreenRec.x + 20, pauseScreenRec.y + 75, 300, 50), "Current Level  " + currentLevel);
+			// GUI.Label (new Rect (pauseScreenRec.x + 20, pauseScreenRec.y + 40, 300, 50), "Score " + currentScore.ToString ());
+			// GUI.Label (new Rect (pauseScreenRec.x + 20, pauseScreenRec.y + 75, 300, 50), "Current Level  " + currentLevel);
 			
 		}
 	}

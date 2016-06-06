@@ -11,16 +11,33 @@ public class AnimationPlayer : MonoBehaviour
 	public float delayTime;
 
 	public bool playAnimation;
+
+	protected bool paused;
 	
 	// Use this for initialization
 	void Start ()
 	{
+
 		InvokeRepeating ("PlayAnimation", startDelay, delayTime);
+		
 	}
 
 	void PlayAnimation ()
 	{
-		GetComponent<Animation> ().Play ();
+		if (!paused) {
+			GetComponent<Animation> ().Play ();
+		}
+	}
+
+	void OnPauseGame ()
+	{
+		paused = true;
+	}
+	
+	
+	void OnResumeGame ()
+	{
+		paused = false;
 	}
 
 }

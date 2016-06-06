@@ -4,6 +4,7 @@ using System.Collections;
 public class Rotate : MonoBehaviour
 {
 	public float rotateSpeed;
+	protected bool paused;
 
 	// Use this for initialization
 	void Start ()
@@ -15,7 +16,20 @@ public class Rotate : MonoBehaviour
 	void Update ()
 	{
 
-		// Rotate object on its Y axis
-		gameObject.transform.Rotate (0.0f, gameObject.transform.position.y * rotateSpeed, 0.0f);
+		if (!paused) {
+			// Rotate object on its Y axis
+			gameObject.transform.Rotate (0.0f, gameObject.transform.position.y * rotateSpeed, 0.0f);
+		}
+	}
+
+	void OnPauseGame ()
+	{
+		paused = true;
+	}
+	
+	
+	void OnResumeGame ()
+	{
+		paused = false;
 	}
 }
