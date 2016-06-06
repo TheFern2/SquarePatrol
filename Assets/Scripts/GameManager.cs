@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
 	// Put todo for the game here!
 	// TODO Destroy player when getting to the goal, but without particles
 	// TODO Stars for scoring
+	// TODO Fix time and level loading when paused
 
 	// Count
 	public  int currentScore;
@@ -35,12 +36,16 @@ public class GameManager : MonoBehaviour
 
 	// GUI stuff
 	private bool showStatsScreen = false;
+	private bool showPauseScreen = false;
 	public int statsScreenWidth, statsScreenHeight;
 
 	void Update ()
 	{
 		if (!showStatsScreen) {
-			startTime -= Time.deltaTime;
+			if (!showPauseScreen) {
+				startTime -= Time.deltaTime;
+			}
+
 			startTime = startTime + extendTime;
 			currentTime = string.Format ("{0:0.0}", startTime);
 			
@@ -49,6 +54,12 @@ public class GameManager : MonoBehaviour
 				startTime = 0;
 				CleanUp ();
 			
+			}
+
+			// TODO Add logic to pause game if time is not done - Use escape key
+			// Need to create a new GUI Pause Box to show when game is paused
+			if ((startTime > 0.0) && Input.GetKey (KeyCode.Escape)) {
+				showPauseScreen = true;
 			}
 		}
 
@@ -111,6 +122,21 @@ public class GameManager : MonoBehaviour
 		tokenCount++;
 	}
 
+	private int CheckLoadedLevel ()
+	{
+		int currentLevel = 0;
+
+		for (int i = 0; i < lastLevel; i++) {
+			if (Application.loadedLevel == i) {
+				currentLevel = i;
+				break;
+			}
+		
+		}
+		return currentLevel;
+
+	}
+
 	void OnGUI ()
 	{
 		GUI.skin = skin;
@@ -124,6 +150,8 @@ public class GameManager : MonoBehaviour
 		GUI.Label (rectTimer, currentTime, skin.GetStyle ("Timer"));
 		GUI.Label (new Rect (30, 50, 200, 200), tokenCount.ToString () + "/" + totalTokenCount.ToString ());
 
+
+		// Show Status Screen
 		if (showStatsScreen) {
 			Rect statsScreenRec = new Rect (Screen.width / 2 - (Screen.width * 0.5f / 2),
 			                                Screen.height / 2 - (Screen.height * 0.5f / 2),
@@ -147,6 +175,33 @@ public class GameManager : MonoBehaviour
 			GUI.Label (new Rect (statsScreenRec.x + 20, statsScreenRec.y + 40, 300, 50), "Score " + currentScore.ToString ());
 			GUI.Label (new Rect (statsScreenRec.x + 20, statsScreenRec.y + 75, 300, 50), "Current Level  " + currentLevel);
 
+		}
+
+		// Show Pause Screen
+		if (showPauseScreen) {
+			Rect pauseScreenRec = new Rect (Screen.width / 2 - (Screen.width * 0.5f / 2),
+			                                Screen.height / 2 - (Screen.height * 0.5f / 2),
+			                                Screen.width * 0.5f, Screen.height * 0.5f);
+			
+			GUI.Box (pauseScreenRec, "Stats");
+			
+			// int gameTime = (int)startTime;
+			currentScore = tokenCount * (int)startTime;
+			
+			if (GUI.Button (new Rect (pauseScreenRec.x + pauseScreenRec.width - 170, 
+			                          pauseScreenRec.y + pauseScreenRec.height - 60, 150, 40), "Continue")) {
+
+				Application.LoadLevel (CheckLoadedLevel ());
+			}
+			
+			if (GUI.Button (new Rect (pauseScreenRec.x + 20, 
+			                          pauseScreenRec.y + pauseScreenRec.height - 60, 100, 40), "Quit")) {
+				Application.LoadLevel (0);
+			}
+			
+			GUI.Label (new Rect (pauseScreenRec.x + 20, pauseScreenRec.y + 40, 300, 50), "Score " + currentScore.ToString ());
+			GUI.Label (new Rect (pauseScreenRec.x + 20, pauseScreenRec.y + 75, 300, 50), "Current Level  " + currentLevel);
+			
 		}
 	}
 }
