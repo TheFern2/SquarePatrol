@@ -1,10 +1,10 @@
 # SquarePatrol
-A great game tutorial I followed on youtube
+A great simple game.
 
-This game was done with unity5.
+This game was done with unity5, used simple graphics and c# for the scripts.
+Animations were done in blender.
 
 The controls are WASD, and spacebar to slow down when moving.
-I follow a tutorial on youtube "Making a Simple Game on Unity" from Awful Media. Note: Tutorial Not made by me.
-
-I did a lot of changes of my own, so I was very pleased with the end result.
 This repo includes everything you need to create your own levels.
+
+I will add a list of items that can be added, and if there's enough time and built-in level editor.
