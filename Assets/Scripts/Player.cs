@@ -13,7 +13,7 @@ public class Player : MonoBehaviour
 	private Vector3 input;
 	private Rigidbody playerRb;
 	private Vector3 spawnPoint;
-	public AudioClip[] gameEffects;	
+	public AudioClip[] gameEffects;
 
 	protected bool paused;
 
@@ -33,7 +33,7 @@ public class Player : MonoBehaviour
 			if (playerRb.velocity.magnitude < maxSpeed) {
 				if (Input.GetKey ("space")) {
 					playerRb.AddRelativeForce (input * courseSpeed);
-				} else 
+				} else
 					playerRb.AddRelativeForce (input * moveSpeed);
 			}
 			
@@ -80,6 +80,31 @@ public class Player : MonoBehaviour
 
 	}
 
+	void PlaySound (string soundName)
+	{
+		// Array order - Coin pickup, timeExtender, Win, explosion(Player death), gameLoop
+		AudioSource audio = GetComponent<AudioSource> ();
+
+		string defaultSound = "backgroundMusic";
+
+		switch (soundName) {
+
+		case soundName == "gameOver":
+			audio.clip = gameEffects [2];
+			audio.Play ();
+			break;
+		case soundName == "gameWin":
+			audio.clip = gameEffects [1];
+			audio.Play ();
+			break;
+		default:
+			audio.clip = gameEffects [0];
+			audio.Play ();
+			break;
+		}
+			
+	}
+
 	void PlaySound (int index)
 	{
 		// Array order - Coin pickup, timeExtender, Win, explosion(Player death), gameLoop
@@ -104,7 +129,7 @@ public class Player : MonoBehaviour
 	{
 		paused = true;
 	}
-	
+
 	
 	void OnResumeGame ()
 	{
